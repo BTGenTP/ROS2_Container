@@ -26,11 +26,11 @@ ENV LIBGL_ALWAYS_SOFTWARE=1
 ENV QT_X11_NO_MITSHM=1
 ENV DISPLAY=:1
 
-WORKDIR /workspaces/nav4rails
+WORKDIR /workspaces/btgen
 
 RUN python3 -m pip install --no-cache-dir openai python-dotenv
 
-COPY sim_env/docker/entrypoint.sh /entrypoint.sh
+COPY docker/entrypoint.sh /entrypoint.sh
 RUN sed -i 's/\r$//' /entrypoint.sh && chmod +x /entrypoint.sh
 
 EXPOSE 6080

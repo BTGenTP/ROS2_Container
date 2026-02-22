@@ -1,9 +1,9 @@
 services:
-  nav4rail-proxy:
+  ros2_container:
     build:
-      context: ..
-      dockerfile: sim_env/docker/Dockerfile
-    container_name: nav4rail-proxy
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: ros2_container
     shm_size: "1gb"
     environment:
       VNC_RESOLUTION: "1280x720"
@@ -11,17 +11,17 @@ services:
       TURTLEBOT3_MODEL: "burger"
     ports:
       - "6080:6080"
-    volumes:
-      - "..:/workspaces/nav4rails:rw"
+    # volumes:
+    #   - "..:/workspaces/btgen:rw"
     tty: true
     stdin_open: true
 
-  nav4rail-proxy-gpu:
+  ros2_container-gpu:
     profiles: ["gpu"]
     build:
-      context: ..
-      dockerfile: sim_env/docker/Dockerfile
-    container_name: nav4rail-proxy-gpu
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: ros2_container-gpu
     shm_size: "1gb"
     environment:
       VNC_RESOLUTION: "1280x720"
@@ -31,8 +31,8 @@ services:
       TURTLEBOT3_MODEL: "burger"
     ports:
       - "6081:6080"
-    volumes:
-      - "..:/workspaces/nav4rails:rw"
+    # volumes:
+    #   - "..:/workspaces/btgen:rw"
     gpus: all
     tty: true
     stdin_open: true

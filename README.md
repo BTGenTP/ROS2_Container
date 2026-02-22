@@ -1,15 +1,12 @@
 # ROS2_Container
 
-# `sim_env/` — ROS2 Humble Desktop dans le navigateur (noVNC)
-
-Objectif : un environnement proxy **reproductible** (TB3 + Gazebo + Nav2) sans installation ROS locale : on ouvre une URL noVNC.
+## ROS2 Humble Desktop dans le navigateur (noVNC)
 
 ## Démarrage (CPU par défaut)
 
 Depuis la racine du repo :
 
 ```bash
-cd sim_env
 docker compose up --build
 ```
 
@@ -30,7 +27,6 @@ Pré-requis :
 Lancer le profil GPU :
 
 ```bash
-cd sim_env
 docker compose --profile gpu up --build
 ```
 
