@@ -1,0 +1,39 @@
+services:
+  nav4rail-proxy:
+    build:
+      context: ..
+      dockerfile: sim_env/docker/Dockerfile
+    container_name: nav4rail-proxy
+    shm_size: "1gb"
+    environment:
+      VNC_RESOLUTION: "1280x720"
+      LIBGL_ALWAYS_SOFTWARE: "1"
+      TURTLEBOT3_MODEL: "burger"
+    ports:
+      - "6080:6080"
+    volumes:
+      - "..:/workspaces/nav4rails:rw"
+    tty: true
+    stdin_open: true
+
+  nav4rail-proxy-gpu:
+    profiles: ["gpu"]
+    build:
+      context: ..
+      dockerfile: sim_env/docker/Dockerfile
+    container_name: nav4rail-proxy-gpu
+    shm_size: "1gb"
+    environment:
+      VNC_RESOLUTION: "1280x720"
+      LIBGL_ALWAYS_SOFTWARE: "0"
+      NVIDIA_VISIBLE_DEVICES: "all"
+      NVIDIA_DRIVER_CAPABILITIES: "all"
+      TURTLEBOT3_MODEL: "burger"
+    ports:
+      - "6081:6080"
+    volumes:
+      - "..:/workspaces/nav4rails:rw"
+    gpus: all
+    tty: true
+    stdin_open: true
+
