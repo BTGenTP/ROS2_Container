@@ -17,7 +17,12 @@ docker compose up --build
 
 Puis ouvrir :
 - `http://localhost:6080`
+- si la racine noVNC ne s'affiche pas correctement: `http://localhost:6080/vnc.html`
 - API de contrôle : `http://localhost:8001/api/health`
+
+Notes:
+- ce lancement démarre le service CPU `ros2_container`, pas le profil GPU
+- les logs du conteneur affichent les ports internes `6080` et `8001`; côté hôte, il faut utiliser `6080` et `8001`
 
 Dans le bureau XFCE, ouvrir un terminal et vérifier :
 
@@ -38,7 +43,12 @@ docker compose --profile gpu up --build
 
 Puis ouvrir :
 - `http://localhost:6081`
+- si la racine noVNC ne s'affiche pas correctement: `http://localhost:6081/vnc.html`
 - API de contrôle : `http://localhost:8002/api/health`
+
+Notes:
+- ce lancement démarre le service `ros2_container-gpu`
+- les logs du conteneur continuent d'afficher les ports internes `6080` et `8001`; côté hôte, il faut utiliser `6081` et `8002`
 
 ## API de contrôle Nav2
 
@@ -87,8 +97,9 @@ Le conteneur est autonome :
 Les scripts `scripts/*.sh` s’appuient uniquement sur ce runtime local et permettent
 de relancer la navigation seule sans arrêter Gazebo ni AMCL.
 
-## Notes performance / stabilité
+## Notes performance / stabilite
 
-- Par défaut, le conteneur force le rendu logiciel (`LIBGL_ALWAYS_SOFTWARE=1`).\n
+- Par defaut, le conteneur force le rendu logiciel (`LIBGL_ALWAYS_SOFTWARE=1`).
+- Le bureau noVNC repose sur `websockify -> x11vnc -> Xvfb`; si le websocket s'ouvre mais que le bureau reste vide, verifier les logs `x11vnc` du conteneur.
 - Si Gazebo/RViz est lent : réduire la résolution via `VNC_RESOLUTION` dans `compose.yaml`, ou lancer la démo avec `--no-rviz`.
 
