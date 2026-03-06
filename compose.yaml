@@ -13,8 +13,6 @@ services:
     ports:
       - "6080:6080"
       - "8001:8001"
-    volumes:
-      - "../..:/workspaces/btgen:rw"
     tty: true
     stdin_open: true
 
@@ -35,8 +33,6 @@ services:
     ports:
       - "6081:6080"
       - "8002:8001"
-    volumes:
-      - "../..:/workspaces/btgen:rw"
     gpus: all
     tty: true
     stdin_open: true

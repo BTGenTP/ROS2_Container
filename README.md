@@ -78,8 +78,14 @@ Le runtime persistant est stocké dans `runtime/BT_Navigator/` :
 - `logs/`
 - `state/pids/`
 
-Les scripts `scripts/*.sh` alimentent ce runtime à partir de `repositories/BT_Navigator/`
-et permettent de relancer la navigation seule sans arrêter Gazebo ni AMCL.
+Le conteneur est autonome :
+
+- aucun import Python depuis un autre dépôt
+- aucun besoin de monter `BT_Navigator`
+- les assets Nav2 nécessaires sont déjà embarqués dans `runtime/BT_Navigator/`
+
+Les scripts `scripts/*.sh` s’appuient uniquement sur ce runtime local et permettent
+de relancer la navigation seule sans arrêter Gazebo ni AMCL.
 
 ## Notes performance / stabilité
 

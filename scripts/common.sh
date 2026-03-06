@@ -3,13 +3,12 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-WORKSPACE_ROOT="$(cd "$REPO_DIR/../.." && pwd)"
-
-BT_NAV_SOURCE_REPO="${BT_NAV_SOURCE_REPO:-$WORKSPACE_ROOT/repositories/BT_Navigator}"
 ROS_MAIN_WS="${ROS_MAIN_WS:-$HOME/ros2_ws}"
 RUNTIME_ROOT="${ROS2_CONTROL_RUNTIME_ROOT:-$REPO_DIR/runtime/BT_Navigator}"
 
 GENERATED_BT_DIR="$RUNTIME_ROOT/behavior_trees/generated"
+LEGACY_GENERATED_BT_DIR="$RUNTIME_ROOT/behavior_trees/__generated"
+REFERENCE_BT_DIR="$RUNTIME_ROOT/behavior_trees"
 PARAMS_DIR="$RUNTIME_ROOT/params"
 MAPS_DIR="$RUNTIME_ROOT/maps"
 CONFIG_DIR="$RUNTIME_ROOT/config"
@@ -42,38 +41,11 @@ source_ros_env() {
 
 bootstrap_runtime() {
   ensure_runtime_dirs
-
-  if [ -f "$BT_NAV_SOURCE_REPO/maps/exploration_map.yaml" ] && [ ! -f "$MAPS_DIR/exploration_map.yaml" ]; then
-    cp "$BT_NAV_SOURCE_REPO/maps/exploration_map.yaml" "$MAPS_DIR/exploration_map.yaml"
+  if [ -d "$LEGACY_GENERATED_BT_DIR" ]; then
+    find "$LEGACY_GENERATED_BT_DIR" -maxdepth 1 -type f -name '*.xml' -exec cp -n {} "$GENERATED_BT_DIR"/ \;
   fi
-  if [ -f "$BT_NAV_SOURCE_REPO/maps/exploration_map.pgm" ] && [ ! -f "$MAPS_DIR/exploration_map.pgm" ]; then
-    cp "$BT_NAV_SOURCE_REPO/maps/exploration_map.pgm" "$MAPS_DIR/exploration_map.pgm"
-  fi
-  if [ -f "$BT_NAV_SOURCE_REPO/behavior_trees/navigate_to_pose_w_replanning_and_recovery.xml" ] && [ ! -f "$DEFAULT_BT_XML" ]; then
-    cp "$BT_NAV_SOURCE_REPO/behavior_trees/navigate_to_pose_w_replanning_and_recovery.xml" "$DEFAULT_BT_XML"
-  fi
-  if [ -f "$BT_NAV_SOURCE_REPO/params/nav2_params.yaml" ] && [ ! -f "$PARAMS_TEMPLATE" ]; then
-    cp "$BT_NAV_SOURCE_REPO/params/nav2_params.yaml" "$PARAMS_TEMPLATE"
-    python3 - "$PARAMS_TEMPLATE" "$DEFAULT_BT_XML" <<'PY'
-from pathlib import Path
-import sys
-
-params_path = Path(sys.argv[1])
-bt_path = sys.argv[2]
-lines = params_path.read_text(encoding="utf-8").splitlines()
-updated = []
-replaced = False
-for line in lines:
-    if line.lstrip().startswith("default_nav_to_pose_bt_xml:"):
-        indent = line[: len(line) - len(line.lstrip())]
-        updated.append(f"{indent}default_nav_to_pose_bt_xml: {bt_path}")
-        replaced = True
-    else:
-        updated.append(line)
-if not replaced:
-    raise SystemExit("default_nav_to_pose_bt_xml not found in nav2 params template")
-params_path.write_text("\n".join(updated) + "\n", encoding="utf-8")
-PY
+  if [ -f "$REFERENCE_BT_DIR/navigate_to_pose_w_replanning_and_recovery.xml" ] && [ ! -f "$DEFAULT_BT_XML" ]; then
+    cp "$REFERENCE_BT_DIR/navigate_to_pose_w_replanning_and_recovery.xml" "$DEFAULT_BT_XML"
   fi
 }
 

@@ -18,7 +18,7 @@ echo "[ROS2_Container] Starting x11vnc on port ${VNC_PORT}"
 x11vnc -display "${DISPLAY}" -nopw -forever -shared -rfbport "${VNC_PORT}" -xkb >/tmp/x11vnc.log 2>&1 &
 
 echo "[ROS2_Container] noVNC available on :${NOVNC_PORT}"
-echo "[ROS2_Container] Workspace mounted at /workspaces/btgen"
+echo "[ROS2_Container] Runtime root at /opt/ros2_container/runtime/BT_Navigator"
 
 if [ -f /opt/ros/humble/setup.bash ]; then
   # Preload ROS env for terminals launched inside desktop (avoid duplicate lines)
@@ -27,7 +27,7 @@ if [ -f /opt/ros/humble/setup.bash ]; then
   fi
 fi
 
-CONTROL_APP="/workspaces/btgen/repositories/ROS2_Container/api/app.py"
+CONTROL_APP="/opt/ros2_container/api/app.py"
 CONTROL_PORT="${ROS2_CONTROL_PORT:-8001}"
 if [ -f "$CONTROL_APP" ]; then
   echo "[ROS2_Container] Starting control API on :${CONTROL_PORT}"

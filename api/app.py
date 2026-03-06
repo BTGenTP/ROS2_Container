@@ -13,6 +13,7 @@ from pydantic import BaseModel
 REPO_DIR = Path(__file__).resolve().parent.parent
 RUNTIME_ROOT = Path(os.getenv("ROS2_CONTROL_RUNTIME_ROOT", REPO_DIR / "runtime" / "BT_Navigator")).resolve()
 GENERATED_BT_DIR = RUNTIME_ROOT / "behavior_trees" / "generated"
+LEGACY_GENERATED_BT_DIR = RUNTIME_ROOT / "behavior_trees" / "__generated"
 SCRIPTS_DIR = REPO_DIR / "scripts"
 
 app = FastAPI(title="ROS2 Nav2 Control Plane")
@@ -72,6 +73,11 @@ def _ensure_runtime_tree() -> None:
     GENERATED_BT_DIR.mkdir(parents=True, exist_ok=True)
     (RUNTIME_ROOT / "logs").mkdir(parents=True, exist_ok=True)
     (RUNTIME_ROOT / "state" / "pids").mkdir(parents=True, exist_ok=True)
+    if LEGACY_GENERATED_BT_DIR.exists():
+        for xml_file in LEGACY_GENERATED_BT_DIR.glob("*.xml"):
+            target = GENERATED_BT_DIR / xml_file.name
+            if not target.exists():
+                target.write_text(xml_file.read_text(encoding="utf-8"), encoding="utf-8")
 
 
 def _safe_filename(filename: Optional[str]) -> str:
