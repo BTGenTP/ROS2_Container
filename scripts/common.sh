@@ -29,11 +29,16 @@ ensure_runtime_dirs() {
 }
 
 source_ros_env() {
+  # ROS setup scripts can reference unset variables; our scripts run with `set -u`.
+  # Disable nounset while sourcing to avoid `unbound variable` failures.
+  set +u
+  # shellcheck disable=SC1091
   source /opt/ros/humble/setup.bash
   if [ -f "$ROS_MAIN_WS/install/setup.bash" ]; then
     # shellcheck disable=SC1091
     source "$ROS_MAIN_WS/install/setup.bash"
   fi
+  set -u
   export TURTLEBOT3_MODEL="${TURTLEBOT3_MODEL:-burger}"
   export ROS_LOG_DIR="${ROS_LOG_DIR:-$LOG_DIR/ros}"
   mkdir -p "$ROS_LOG_DIR"

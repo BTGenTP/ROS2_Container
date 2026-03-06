@@ -63,6 +63,51 @@ Endpoints principaux :
 - `POST /api/navigation/restart`
 - `POST /api/navigation/goal`
 
+### Exemples `curl` (CPU vs GPU)
+
+Choisir la bonne base URL selon le profil :
+
+```bash
+# CPU
+export ROS2_API_BASE=http://localhost:8001
+
+# GPU
+# export ROS2_API_BASE=http://localhost:8002
+```
+
+```bash
+curl -X GET "${ROS2_API_BASE}/api/health"
+curl -X GET "${ROS2_API_BASE}/api/status"
+```
+
+```bash
+curl -X POST "${ROS2_API_BASE}/api/bt/upload" \
+  -H "Content-Type: application/json" \
+  -d '{ "xml": "<root main_tree_to_execute=\"MainTree\"></root>", "filename": "mission.xml" }'
+```
+
+```bash
+curl -X POST "${ROS2_API_BASE}/api/sim/start" \
+  -H "Content-Type: application/json" \
+  -d '{ "initial_pose": "0.0,0.0,0.0", "headless": false }'
+```
+
+```bash
+curl -X POST "${ROS2_API_BASE}/api/sim/reset"
+```
+
+```bash
+curl -X POST "${ROS2_API_BASE}/api/navigation/restart" \
+  -H "Content-Type: application/json" \
+  -d '{ "bt_filename": "mission.xml", "initial_pose": "0.0,0.0,0.0" }'
+```
+
+```bash
+curl -X POST "${ROS2_API_BASE}/api/navigation/goal" \
+  -H "Content-Type: application/json" \
+  -d '{ "goal_name": "Station_A" }'
+```
+
 Exemple de transfert + exécution :
 
 ```bash
