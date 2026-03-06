@@ -1,0 +1,6 @@
+locations:
+  Station_A: [3.0, -1.0, 0.0]
+  Station_B: [1.0, 1.0, 0.0]
+  Station_C: [2.0, 1.0, 0.0]
+  Loading_Dock: [-1.5, 2.0, 1.57]
+  Inspection_Point: [0.5, -2.0, 3.14]

@@ -27,6 +27,14 @@ if [ -f /opt/ros/humble/setup.bash ]; then
   fi
 fi
 
+CONTROL_APP="/workspaces/btgen/repositories/ROS2_Container/api/app.py"
+CONTROL_PORT="${ROS2_CONTROL_PORT:-8001}"
+if [ -f "$CONTROL_APP" ]; then
+  echo "[ROS2_Container] Starting control API on :${CONTROL_PORT}"
+  python3 -m uvicorn app:app --app-dir "$(dirname "$CONTROL_APP")" \
+    --host 0.0.0.0 --port "${CONTROL_PORT}" >/tmp/ros2_control_api.log 2>&1 &
+fi
+
 # Run noVNC (foreground)
 exec websockify --web=/usr/share/novnc/ "${NOVNC_PORT}" "localhost:${VNC_PORT}"
 

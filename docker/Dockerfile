@@ -28,7 +28,7 @@ ENV DISPLAY=:1
 
 WORKDIR /workspaces/btgen
 
-RUN python3 -m pip install --no-cache-dir openai python-dotenv
+RUN python3 -m pip install --no-cache-dir openai python-dotenv fastapi uvicorn pyyaml
 
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN sed -i 's/\r$//' /entrypoint.sh && chmod +x /entrypoint.sh
