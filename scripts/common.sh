@@ -169,8 +169,12 @@ goal_name = sys.argv[2]
 data = yaml.safe_load(loc_path.read_text(encoding="utf-8")) or {}
 locations = data.get("locations", {})
 coords = locations.get(goal_name)
+if coords is None and " " in goal_name:
+    # Common UX issue: user types "Station A" instead of "Station_A"
+    coords = locations.get(goal_name.replace(" ", "_"))
 if not isinstance(coords, list) or len(coords) != 3:
-    raise SystemExit(f"Unknown goal location: {goal_name}")
+    known = ", ".join(sorted(k for k in locations.keys() if isinstance(k, str)))
+    raise SystemExit(f"Unknown goal location: {goal_name}. Known: {known}")
 print(f"{coords[0]},{coords[1]},{coords[2]}")
 PY
 }

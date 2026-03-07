@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import os
 import re
 import subprocess
@@ -17,6 +18,16 @@ LEGACY_GENERATED_BT_DIR = RUNTIME_ROOT / "behavior_trees" / "__generated"
 SCRIPTS_DIR = REPO_DIR / "scripts"
 
 app = FastAPI(title="ROS2 Nav2 Control Plane")
+
+_api_log_dir = (RUNTIME_ROOT / "logs")
+_api_log_dir.mkdir(parents=True, exist_ok=True)
+_logger = logging.getLogger("ros2_control_api")
+if not _logger.handlers:
+    _logger.setLevel(logging.INFO)
+    fh = logging.FileHandler(_api_log_dir / "control_api.log", encoding="utf-8")
+    fmt = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
+    fh.setFormatter(fmt)
+    _logger.addHandler(fh)
 
 
 def _script_path(name: str) -> Path:
@@ -36,6 +47,7 @@ def _run_script(name: str, args: list[str] | None = None, timeout: int = 180) ->
     cmd = ["/bin/bash", str(_script_path(name))]
     if args:
         cmd.extend(args)
+    _logger.info("run_script name=%s args=%s", name, args or [])
     proc = subprocess.run(
         cmd,
         capture_output=True,
@@ -50,6 +62,7 @@ def _run_script(name: str, args: list[str] | None = None, timeout: int = 180) ->
         "stderr": proc.stderr.strip(),
     }
     if proc.returncode != 0:
+        _logger.error("run_script_failed name=%s exit_code=%s stderr=%s", name, proc.returncode, payload.get("stderr"))
         raise HTTPException(status_code=500, detail=payload)
     return payload
 
