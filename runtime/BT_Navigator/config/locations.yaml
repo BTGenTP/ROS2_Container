@@ -1,5 +1,8 @@
+# exploration_map (default): origin [-2.95, -2.57], resolution 0.05
+# Valid bounds for ~5m map (e.g. 100x100 px): x in [-2.95, 2.05], y in [-2.57, 2.43]
+# Keep goal poses within these bounds to avoid "Goal was rejected".
 locations:
-  Station_A: [3.0, -1.0, 0.0]
+  Station_A: [1.5, 1.0, 0.0]
   Station_B: [1.0, 1.0, 0.0]
   Station_C: [2.0, 1.0, 0.0]
   Loading_Dock: [-1.5, 2.0, 1.57]
